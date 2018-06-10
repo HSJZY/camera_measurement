@@ -1,0 +1,70 @@
+import os
+import tensorflow as tf
+import urllib.request
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+def shuffle_data(dataset):
+    images=dataset[0]
+    labels=dataset[1]
+    index=[i for i in range(len(images))]
+    np.random.shuffle(index)
+#     print("index:",index)
+    random_images=[]
+    random_labels=[]
+    for i in range(len(images)):
+        random_images.append(images[index[i]])
+        random_labels.append(labels[index[i]])
+    #print("random_labels:",random_labels)
+    random_dataset=np.array([random_images,random_labels])
+    return random_dataset
+def main()
+    LOGDIR='./tmp/'
+    GIST_URL = 'https://gist.githubusercontent.com/dandelionmane/4f02ab8f1451e276fea1f165a20336f1/raw/dfb8ee95b010480d56a73f324aca480b3820c180/'
+    mnist=tf.contrib.learn.datasets.mnist.read_data_sets(train_dir=LOGDIR+'data',one_hot=True)
+
+    train_images=[]
+    train_labels=[]
+    for index,image in enumerate(mnist.train.images):
+        label=np.argmax(mnist.train.labels[index])
+        if label<=5 and label>=1:
+            image[image>0.01]=1
+            image[image<=0.1]=0
+            train_images.append(image)
+            train_labels.append(label)
+        else:
+            image[image>0.01]=1
+            image[image<=0.1]=0
+            train_images.append(image)
+            train_labels.append(0)
+
+    negative_dataset=np.load("negative_samples.npy")
+    print(negative_dataset)
+    for i in range(len(negative_dataset[0])):
+        train_images.append(negative_dataset[0][i][0])
+        train_labels.append(negative_dataset[1][i])
+    # train_images=np.array(train_images)
+    train_labels=np.array(train_labels)
+
+    #生成one-hot编码
+    # n_class = train_labels.max() + 1
+    # n_sample = train_labels.shape[0]
+    # print("n_class and n_sample",n_class,n_sample,train_labels)
+    # train_labels_onehot = np.zeros((n_sample, n_class)).tolist()
+    # for i in range(len(train_labels_onehot)):
+    #     train_labels_onehot[i][train_labels[i]]=1
+
+    train_data=(train_images,train_labels)
+    train_data=shuffle_data(train_data)
+
+    test_images=train_data[0][:1024]
+    test_labels=train_data[1][:1024]
+    train_images=train_data[0][1024:]
+    train_labels=train_data[1][1024:]
+
+    dataset_digit=np.array([train_images,train_labels,test_images,test_labels])
+    np.save("dataset_digit",dataset_digit)
+
+if __name__=="__main__":
+    main()
