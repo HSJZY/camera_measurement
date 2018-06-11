@@ -23,6 +23,10 @@ class Marker(object):
             return None
         center_array = mean(self.contours, axis=0).flatten()
         return (int(center_array[0]), int(center_array[1]))
+    
+    @property
+    def contour(self):
+        return self.contours
 
     def draw_contour(self, img, color=(0, 255, 0), linewidth=5):
         cv2.drawContours(img, [self.contours], -1, color, linewidth)
@@ -30,10 +34,6 @@ class Marker(object):
     def highlite_marker(self, img, contour_color=(0, 255, 0), text_color=(255, 0, 0), linewidth=5):
         self.draw_contour(img, color=contour_color, linewidth=linewidth)
         cv2.putText(img, str(self.id), self.center, cv2.FONT_HERSHEY_SIMPLEX, 2, text_color)
-
-    @classmethod
-    def generate(cls):
-        return HammingMarker(id=randint(4096))
 
     @property
     def id_as_binary(self):
