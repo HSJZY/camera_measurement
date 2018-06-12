@@ -4,15 +4,14 @@ from numpy import mean, binary_repr, zeros
 from numpy.random import randint
 from scipy.ndimage import zoom
 
-
-
 MARKER_SIZE = 28
 
 
 class Marker(object):
-    def __init__(self, id, contours=None):
+    def __init__(self, id, contours=None,position_3D=None):
         self.id = id
         self.contours = contours
+        self.position_3D=position_3D
 
     def __repr__(self):
         return '<Marker id={} center={}>'.format(self.id, self.center)
@@ -23,10 +22,15 @@ class Marker(object):
             return None
         center_array = mean(self.contours, axis=0).flatten()
         return (int(center_array[0]), int(center_array[1]))
-    
+    @property
+    def position(self):
+        return self.position_3D
     @property
     def contour(self):
         return self.contours
+
+    def set_position_3D(self,position):
+        self.position_3D=position
 
     def draw_contour(self, img, color=(0, 255, 0), linewidth=5):
         cv2.drawContours(img, [self.contours], -1, color, linewidth)
