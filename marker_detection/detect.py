@@ -130,7 +130,7 @@ def detect_markers(img):
     cv2.imshow('image',gray)
     cv2.waitKey(0)
     
-    svc = joblib.load("/home/jiang/Desktop/求毕业/python-ar-markers/ar_markers/hamming/svc_model.m")
+    svc = joblib.load("./marker_detection/svc_model.m")
 
     edges = cv2.Canny(gray, 10, 100)
     

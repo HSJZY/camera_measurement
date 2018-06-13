@@ -42,5 +42,7 @@ class Marker(object):
     @property
     def id_as_binary(self):
         return binary_repr(self.id, width=12)
+    
+    
 
 

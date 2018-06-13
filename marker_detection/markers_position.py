@@ -13,13 +13,16 @@ class MarkersPosition(object):
     _marker3_pos=None
     _marker4_pos=None
     _marker5_pos=None
+    _markers_pos=None
+    def __init__(self):
+#        pass
+        MarkersPosition._markers_pos=[MarkersPosition._marker1_pos,MarkersPosition._marker2_pos,MarkersPosition._marker3_pos,MarkersPosition._marker4_pos,MarkersPosition._marker5_pos]
     """
     @parameter position: [[],[],...]
     """
     @property
     def markers_pos(self):
-        marker_pos=[self._marker1_pos,self._marker2_pos,self._marker3_pos,self._marker4_pos,self._marker5_pos]
-        return marker_pos
+        return self._markers_pos
     @markers_pos.setter
     def markers_pos(self,markers):
         marker5=[]
@@ -38,16 +41,48 @@ class MarkersPosition(object):
                 marker5.append(marker.position)
             else:
                 continue
-        MarkersPosition.marker5_pos=marker5
+        MarkersPosition._marker5_pos=marker5
+        MarkersPosition._markers_pos=[self._marker1_pos,self._marker2_pos,self._marker3_pos,self._marker4_pos,self._marker5_pos]
+    
+    '''
+    return str_markers_pos format: marker1_pos:(1,2,3).marker2_pos:(4,5,6).marker3_pos:None.marker4_pos:(4,5,6).marker5_pos:(4,5,6).(1,3,6).
+    '''
+    @property
+    def markers_pos_string(self):
+        str_markers_pos=""
+        for i in range(5):
+            if i<4:
+                str_markers_pos+="marker"+str(i+1)+"_pos:"
+                if self._markers_pos[i]==None:
+                    str_markers_pos+="None."
+                else:
+                    str_markers_pos+="("+str(self._markers_pos[i][0])+","+str(self._markers_pos[i][1])+","+str(self._markers_pos[i][2])+")."
+            else:
+                str_markers_pos+="marker"+str(i+1)+"_pos:"
+                if self._markers_pos[i]==None:
+                    str_markers_pos+="None."
+                    continue
+                for j in range(len(self._markers_pos[i])):
+                    append_str=","
+                    str_markers_pos+="("+str(self._markers_pos[i][j][0])+","+str(self._markers_pos[i][j][1])+","+str(self._markers_pos[i][j][2])+")"+(append_str if j<len(self._markers_pos[i])-1 else "")
+                str_markers_pos+="."
+        return str_markers_pos
+
 def test():
     f1=MarkersPosition()
     f2=MarkersPosition()
     marker1=Marker(1,position_3D=(1,2,3))
     marker2=Marker(2,position_3D=(4,5,6))
-    markers=[marker1,marker2]
-    f1.markers_pos=markers
-    print(f2._marker1_pos)
-    print(f2._marker2_pos)
+    marker3=Marker(3,position_3D=(1,2,3))
+    marker4=Marker(4,position_3D=(4,5,6))
+    marker5=Marker(5,position_3D=(4,5,6))
+    marker6=Marker(5,position_3D=(1,3,6))
+    
+    markers=[marker1,marker2,marker3,marker4,marker5,marker6]
+    f2.markers_pos=markers
+    print(f1._marker1_pos)
+    print(f1._marker2_pos)
+    print(f1.markers_pos_string)
 if __name__=="__main__":
     test()
         
