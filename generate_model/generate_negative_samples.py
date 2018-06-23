@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 IMSIZE=28
 
 def show_binary(test_img):

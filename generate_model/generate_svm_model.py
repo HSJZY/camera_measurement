@@ -21,6 +21,7 @@ def main():
     X_test=np.zeros((len(test_images),len(test_images[0])))
     y_test=np.zeros(len(test_labels))
     for i in range(len(train_images)):
+#        print("train_images[i]:",train_images[i])
         X_train[i]=train_images[i]
         y_train[i]=train_labels[i]
 
@@ -35,13 +36,16 @@ def main():
 
     # print(knn.predict(df_test_X))
 
-    svc = SVC()
-    svc.fit(df_train_X, df_train_Y)
+#    svc = SVC()
+#    svc.fit(df_train_X, df_train_Y)
+    
+    neigh = KNeighborsClassifier(n_neighbors=10)
+    neigh.fit(df_train_X, df_train_Y)
 
-    joblib.dump(svc, "svc_model.m")
+    joblib.dump(neigh,"neigh_model.m")
 
     # Y_pred = svc.predict(df_test_X)
-    acc_svc = round(svc.score(df_test_X, df_test_Y) * 100, 2)
+    acc_svc = round(neigh.score(df_test_X, df_test_Y) * 100, 2)
     print(acc_svc)
 if __name__=="__main__":
     main()

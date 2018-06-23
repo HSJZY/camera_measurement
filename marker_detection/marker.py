@@ -14,7 +14,7 @@ class Marker(object):
         self.position_3D=position_3D
 
     def __repr__(self):
-        return '<Marker id={} center={}>'.format(self.id, self.center)
+        return '<Marker id={} center={}> position_3D={}'.format(self.id, self.center,self.position_3D)
 
     @property
     def center(self):
@@ -25,6 +25,9 @@ class Marker(object):
     @property
     def position(self):
         return self.position_3D
+    @position.setter
+    def position(self,pos_3D):
+        self.position_3D=pos_3D
     @property
     def contour(self):
         return self.contours
@@ -33,6 +36,7 @@ class Marker(object):
         self.position_3D=position
 
     def draw_contour(self, img, color=(0, 255, 0), linewidth=5):
+#        print("self.contours:",self.contours)
         cv2.drawContours(img, [self.contours], -1, color, linewidth)
 
     def highlite_marker(self, img, contour_color=(0, 255, 0), text_color=(255, 0, 0), linewidth=5):

@@ -4,6 +4,7 @@ import urllib.request
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from numpy import rot90
 
 def shuffle_data(dataset):
     images=dataset[0]
@@ -24,7 +25,7 @@ def rotate_90_img(img,row_size):
     rotated_img=rot90(img_matrix).reshape(-1,row_size*row_size)[0]
     return rotated_img
 
-def main()
+def main():
     LOGDIR='./tmp/'
     GIST_URL = 'https://gist.githubusercontent.com/dandelionmane/4f02ab8f1451e276fea1f165a20336f1/raw/dfb8ee95b010480d56a73f324aca480b3820c180/'
     mnist=tf.contrib.learn.datasets.mnist.read_data_sets(train_dir=LOGDIR+'data',one_hot=True)
@@ -58,16 +59,21 @@ def main()
     train_data=(train_images,train_labels)
     train_data=shuffle_data(train_data)
     print("len(train_data) before:",len(train_data[0]))
-    train_images=train_data[0][:50000].tolist()
-    train_labels=train_data[1][:50000].tolist()
+    train_images=train_data[0][:1].tolist()
+    train_labels=train_data[1][:1].tolist()
     train_data=(train_images,train_labels)
     print("len(train_data) after:",len(train_data[0]))
 
     negative_dataset=np.load("negative_samples.npy")
+    labeled_dataset=np.load("labeled_data_after.npy")
+    
     # print(negative_dataset)
-    for i in range(len(negative_dataset[0])):
+    for i in range(300):
         train_images.append(negative_dataset[0][i][0])
         train_labels.append(negative_dataset[1][i])
+    for i in range(len(labeled_dataset[0])):
+        train_images.append(labeled_dataset[0][i])
+        train_labels.append(labeled_dataset[1][i])
     # train_images=np.array(train_images)
     train_labels=np.array(train_labels)
 
@@ -81,14 +87,15 @@ def main()
 
     train_data=(train_images,train_labels)
     train_data=shuffle_data(train_data)
+    print("len(train_data):",len(train_data))
 
-    test_images=train_data[0][:1024]
-    test_labels=train_data[1][:1024]
-    train_images=train_data[0][1024:]
-    train_labels=train_data[1][1024:]
+    test_images=train_data[0][:150]
+    test_labels=train_data[1][:150]
+    train_images=train_data[0][150:]
+    train_labels=train_data[1][150:]
 
     dataset_digit=np.array([train_images,train_labels,test_images,test_labels])
     np.save("dataset_digit",dataset_digit)
-
+    print("len(dataset_digit[0])",len(dataset_digit[0]))
 if __name__=="__main__":
     main()
