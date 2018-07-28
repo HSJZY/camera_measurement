@@ -27,49 +27,50 @@ def rotate_90_img(img,row_size):
 
 def main():
     LOGDIR='./tmp/'
-    GIST_URL = 'https://gist.githubusercontent.com/dandelionmane/4f02ab8f1451e276fea1f165a20336f1/raw/dfb8ee95b010480d56a73f324aca480b3820c180/'
-    mnist=tf.contrib.learn.datasets.mnist.read_data_sets(train_dir=LOGDIR+'data',one_hot=True)
+#    GIST_URL = 'https://gist.githubusercontent.com/dandelionmane/4f02ab8f1451e276fea1f165a20336f1/raw/dfb8ee95b010480d56a73f324aca480b3820c180/'
+#    mnist=tf.contrib.learn.datasets.mnist.read_data_sets(train_dir=LOGDIR+'data',one_hot=True)
 
     train_images=[]
     train_labels=[]
-    for index,image in enumerate(mnist.train.images):
-        label=np.argmax(mnist.train.labels[index])
-        if label<=5 and label>=1:
-            image[image>0.01]=1
-            image[image<=0.01]=0
-            rotated_img=image
-            for i in range(4):
-                if i==0:
-                    rotated_img=image
-                else:
-                    rotated_img=rotate_90_img(rotated_img,28)
-                train_images.append(rotated_img)
-                train_labels.append(label)
-        else:
-            image[image>0.01]=1
-            image[image<=0.1]=0
-            rotated_img=image
-            for i in range(4):
-                if i==0:
-                    rotated_img=image
-                else:
-                    rotated_img=rotate_90_img(rotated_img,28)
-                train_images.append(image)
-                train_labels.append(0)
-    train_data=(train_images,train_labels)
-    train_data=shuffle_data(train_data)
-    print("len(train_data) before:",len(train_data[0]))
-    train_images=train_data[0][:1].tolist()
-    train_labels=train_data[1][:1].tolist()
-    train_data=(train_images,train_labels)
-    print("len(train_data) after:",len(train_data[0]))
+#    for index,image in enumerate(mnist.train.images):
+#        label=np.argmax(mnist.train.labels[index])
+#        if label<=5 and label>=1:
+#            image[image>0.01]=1
+#            image[image<=0.01]=0
+#            rotated_img=image
+#            for i in range(4):
+#                if i==0:
+#                    rotated_img=image
+#                else:
+#                    rotated_img=rotate_90_img(rotated_img,28)
+#                train_images.append(rotated_img)
+#                train_labels.append(label)
+#        else:
+#            image[image>0.01]=1
+#            image[image<=0.1]=0
+#            rotated_img=image
+#            for i in range(4):
+#                if i==0:
+#                    rotated_img=image
+#                else:
+#                    rotated_img=rotate_90_img(rotated_img,28)
+#                train_images.append(image)
+#                train_labels.append(0)
+#    train_data=(train_images,train_labels)
+#    train_data=shuffle_data(train_data)
+#    print("len(train_data) before:",len(train_data[0]))
+#    train_images=train_data[0][:1].tolist()
+#    train_labels=train_data[1][:1].tolist()
+#    train_data=(train_images,train_labels)
+#    print("len(train_data) after:",len(train_data[0]))
 
     negative_dataset=np.load("negative_samples.npy")
     labeled_dataset=np.load("labeled_data_after.npy")
     
     # print(negative_dataset)
-    for i in range(300):
-        train_images.append(negative_dataset[0][i][0])
+    for i in range(200):
+        print("(negative_dataset[0][i][0]).reshape(1,-1).tolist():",(negative_dataset[0][i][0]).reshape(1,-1).tolist()[0])
+        train_images.append((np.int16(negative_dataset[0][i][0]).reshape(1,-1)).tolist()[0])
         train_labels.append(negative_dataset[1][i])
     for i in range(len(labeled_dataset[0])):
         train_images.append(labeled_dataset[0][i])
@@ -89,10 +90,10 @@ def main():
     train_data=shuffle_data(train_data)
     print("len(train_data):",len(train_data))
 
-    test_images=train_data[0][:150]
-    test_labels=train_data[1][:150]
-    train_images=train_data[0][150:]
-    train_labels=train_data[1][150:]
+    test_images=train_data[0][:1550]
+    test_labels=train_data[1][:1550]
+    train_images=train_data[0][1550:]
+    train_labels=train_data[1][1550:]
 
     dataset_digit=np.array([train_images,train_labels,test_images,test_labels])
     np.save("dataset_digit",dataset_digit)

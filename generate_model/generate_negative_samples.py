@@ -30,9 +30,9 @@ def gen_dataset(file_name,images,labels):
         start_pos=[np.random.randint(0,height-1-rand_size),np.random.randint(0,width-1-rand_size)]
         roi_img=frame[start_pos[0]:start_pos[0]+rand_size-1,start_pos[1]:start_pos[1]+rand_size-1]
         roi_img_resized=cv2.resize(roi_img,(IMSIZE,IMSIZE),interpolation=cv2.INTER_CUBIC)/255.0
-        roi_img_binary=np.array(roi_img_resized.reshape((-1,IMSIZE*IMSIZE)))
-        roi_img_binary[roi_img_binary<0.45]=0
-        roi_img_binary[roi_img_binary>0.45]=1
+        roi_img_binary=np.array(roi_img_resized.reshape((IMSIZE*IMSIZE,-1)))
+        roi_img_binary[roi_img_binary<0.45]=int(0)
+        roi_img_binary[roi_img_binary>0.45]=int(1)
         images.append(roi_img_binary.tolist())
         labels.append(0)
 
@@ -45,7 +45,7 @@ if __name__=="__main__":
     labels=np.array(dataset[1])
     
     x=1192
-    print(images[x])
+    print("image[x]:",images[x])
     show_binary(images[x].reshape((28,28)))
     print(images[x].reshape((28,28)))
 #    

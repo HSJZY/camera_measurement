@@ -14,8 +14,8 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080) 
 
 cv2.namedWindow("image",cv2.WINDOW_NORMAL)
-j=81
-file_path="/home/jiang/Desktop/求毕业/python-ar-markers/digit_detection/camera_measurment/test_img/camera_cali/test_img_"
+j=100
+file_path="../test_img/test_img_"
 while(1):
     ret,frame=cap.read()
     cv2.imshow("image",frame)

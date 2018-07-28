@@ -5,7 +5,10 @@ Created on Tue Jun 12 11:08:36 2018
 
 @author: jiang
 """
-from marker_detection.marker import Marker
+try:
+    from marker_detection.marker import Marker
+except:
+    from marker import Marker
 
 class MarkersPosition(object):
     _marker1_pos=None
@@ -14,6 +17,7 @@ class MarkersPosition(object):
     _marker4_pos=None
     _marker5_pos=None
     _markers_pos=None
+    _hung_index=None
     def __init__(self):
         pass
 #        MarkersPosition._markers_pos=[MarkersPosition._marker1_pos,MarkersPosition._marker2_pos,MarkersPosition._marker3_pos,MarkersPosition._marker4_pos,MarkersPosition._marker5_pos]
@@ -23,6 +27,12 @@ class MarkersPosition(object):
     """
     @parameter position: [[],[],...]
     """
+    @property
+    def hungarian_index(self):
+        return self._hung_index
+    @hungarian_index.setter
+    def hungarian_index(self,index):
+        MarkersPosition._hung_index=index
     @property
     def markers_pos(self):
         return self._markers_pos
@@ -88,6 +98,20 @@ class MarkersPosition(object):
                     str_markers_pos+="("+str(self._markers_pos[i][j][0])+","+str(self._markers_pos[i][j][1])+","+str(self._markers_pos[i][j][2])+")"+(append_str if j<len(self._markers_pos[i])-1 else "")
                 str_markers_pos+="|"
         return str_markers_pos
+    @property
+    def hungarian_index_string(self):
+        str_hung_index="hungarian_index:["
+        if self._hung_index==None:
+            return str_hung_index+"None]"
+        
+        for i,index in enumerate(self._hung_index):
+            str_hung_index+=str(index)
+            if i==len(self._hung_index)-1:
+                break
+            else:
+                str_hung_index+=","
+        str_hung_index+="]"
+        return str_hung_index
 
 def test():
     f1=MarkersPosition()
@@ -99,17 +123,23 @@ def test():
     marker3=Marker(3,position_3D=(1,2,3))
     marker4=Marker(4,position_3D=(4,5,6))
     marker5=Marker(5,position_3D=(4,5,6))
+    marker6=Marker(5,position_3D=(4,5,6))
 
     
-    markers=[marker5]
+    markers=[marker1,marker2,marker3,marker4,marker5,marker6]
     f1.markers_pos=markers
+    f1.hungarian_index=[1,2,3,4]
+    
+    
+    
     print(f1._marker1_pos)
     print(f1._marker2_pos)
     print(f1.markers_pos_string)
     f2=MarkersPosition()
     marker_append=Marker(5)
     f2.markers_pos=[marker_append]
-    print(f2.markers_pos_string)
+    print(f1.hungarian_index_string)
+    print("f1.hungarian_index_string",f1.hungarian_index_string)
 if __name__=="__main__":
     test()
         

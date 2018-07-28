@@ -30,8 +30,8 @@ class UDP_Server(object):
             if data=='exit':
                 break
             markers_pos=MarkersPosition()
-            reply_data=markers_pos.markers_pos_string
-            
+            reply_data=markers_pos.markers_pos_string+markers_pos.hungarian_index_string
+#            print("reply:",reply_data)
             sock.send(reply_data.encode('utf_8'))
         sock.close()
         print('Connection from %s:%s closed.' % addr)
@@ -54,6 +54,7 @@ class UDP_Server(object):
     def start_server(self):
         udp_server_thread=threading.Thread(target=self._start_server_thread)
         udp_server_thread.start()
+        print("ending thread")
 def test():
     f2=MarkersPosition()
     marker1=Marker(1,position_3D=(400,2,400))
@@ -67,11 +68,16 @@ def test():
     
     markers=[marker1,marker2,marker3,marker4,marker5,marker6]
     f2.markers_pos=markers
+#    f2.hungarian_index=[1,2,3,0]
     
     print("starting")
     test_case=UDP_Server()#('192.168.1.103',5000)
     test_case.start_server()
     print("ending")
+    while True:
+#        print("hello")
+        a=1+2
+        continue
 if __name__=="__main__":
     test()
     
