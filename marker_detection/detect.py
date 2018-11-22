@@ -5,6 +5,8 @@ from marker_detection.marker import  Marker
 import math
 import numpy as np
 import random
+import marker_detection.autoencoder
+from marker_detection.autoencoder import eval_model
 MARKER_SIZE=28
 
 def calc_distance_to_marker(marker,length_marker_edge):
@@ -124,7 +126,7 @@ def simple_seprate_contour(markers):
     return marker_list
 
 
-def detect_markers(img,model,edge_length=120):
+def detect_markers(img,model,edge_length=120,Load_Autoencoder=False):
     def validate_digit_marker(detector,marker):
         rows,cols=marker.shape
         res_4=[]
@@ -140,7 +142,9 @@ def detect_markers(img,model,edge_length=120):
             rotated_img=cv2.warpAffine(marker,M,(0,0))
 #            cv2.imshow("frame:",rotated_img)
 #            cv2.waitKey(0)
-            rotated_img_reshaped=rotated_img.reshape(-1,MARKER_SIZE*MARKER_SIZE)
+            rotated_img_reshaped=rotated_img.reshape(-1,MARKER_SIZE*MARKER_SIZE)       
+            if Load_Autoencoder:
+                rotated_img_reshaped=eval_model(rotated_img_reshaped)
             pred_res=detector.predict(rotated_img_reshaped)[0]
             res_4.append(pred_res)
         res_4.append(res_4[0])

@@ -9,9 +9,11 @@ import math
 import numpy as np
 from marker_detection.hungarian_assignment import TaskAssignment
 
-formation_H=[[0,0],[1000,0],[1000,-1000],[0,-1000]]
+Load_Autoencoder=True
+
+formation_H=[[0,0],[800,0],[800,-800],[0,-800]]
 formation_I=[[0,400],[0,0],[0,-400],[0,-800]]
-formation_T=[[-500,0],[0,600],[0,1200],[500,0]]
+formation_T=[[-400,0],[0,0],[0,800],[400,0]]
 
 marker_1=Marker(id=1)
 marker_2=Marker(id=2)
@@ -43,15 +45,10 @@ def generate_marker_5_pos(markers):
             gen_markers.append(marker)
             continue
         marker_position=marker.position;
-        pos_1=(marker_position[0],marker_position[1],marker_position[2]) #define the first point is left-buttom side with 500,200
-        pos_2=(marker_position[0]+3000,marker_position[1],marker_position[2])
-        pos_3=(marker_position[0]+3000,marker_position[1]-1600,marker_position[2])
+        pos_1=(marker_position[0],marker_position[1],marker_position[2])
         new_marker_1=Marker(id=5, contours=marker.contour,position_3D=pos_1)
-        new_marker_2=Marker(id=5, contours=marker.contour,position_3D=pos_2)
-        new_marker_3=Marker(id=5, contours=marker.contour,position_3D=pos_3)
         gen_markers.append(new_marker_1)
-        gen_markers.append(new_marker_2)
-        gen_markers.append(new_marker_3)
+        break 
     return gen_markers
 def for_adjust():
     f2=MarkersPosition()
@@ -132,7 +129,7 @@ def init_assignment(formation_setted):
     ms_pos.markers_pos=markers
     ms_pos.hungarian_index=hung_index
 def main():
-    cap=cv2.VideoCapture(1)
+    cap=cv2.VideoCapture('./test_img/test_video_orig.avi')
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     
@@ -147,13 +144,16 @@ def main():
     out_video = cv2.VideoWriter(video_file_path+file_name, fourcc, 5.0, (1920, 1080))
     out_video_orig = cv2.VideoWriter(video_file_path+file_name_orig, fourcc, 5.0, (1920, 1080))
 #    for_adjust();
-
-    model = joblib.load("./marker_detection/neigh_model.m")
+    model=None
+    if Load_Autoencoder:
+        model=joblib.load("./marker_detection/en_neigh_model.m")
+    else:
+        model = joblib.load("./marker_detection/neigh_model.m")
     
     log_file_path="./log.txt"
     log_file= open(log_file_path, "w")
 
-    formation=formation_T
+    formation=formation_I
     init_assignment(formation)
     addr=('192.168.43.95',5000)
     server=UDP_Server(addr)
@@ -162,7 +162,7 @@ def main():
         ret,frame=cap.read()
 #        cv2.imshow("hello",frame)
 #        cv2.waitKey(0)
-        before_markers=detect_markers(frame,model,118)
+        before_markers=detect_markers(frame,model,118,Load_Autoencoder)
         markers=generate_marker_5_pos(before_markers)
         
         global marker_1
@@ -186,7 +186,7 @@ def main():
         ms_pos.markers_pos=markers
         ms_pos.hungarian_index=hung_index
 #        print("*******************markers_position************************")
-#        print(ms_pos.markers_pos_string)
+        print(ms_pos.markers_pos_string)
 #        print(ms_pos.hungarian_index_string)
 #        for marker in markers:
 #            print(marker)
