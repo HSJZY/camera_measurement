@@ -14,7 +14,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080) 
 
 cv2.namedWindow("image",cv2.WINDOW_NORMAL)
-j=100
+j=1
 file_path="../test_img/test_img_"
 while(1):
     ret,frame=cap.read()
